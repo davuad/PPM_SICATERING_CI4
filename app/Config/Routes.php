@@ -5,9 +5,11 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Home::index');
+$routes->options('(:any)', 'Home::options');
 
-$routes->post('/api/register', 'RegisterController::register');
+
+$routes->get('/', 'Home::index');
+$routes->post('/register', 'RegisterController::register');
 $routes->post('/api/login', 'LoginController::login');
 
 

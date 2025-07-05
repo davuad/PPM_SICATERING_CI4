@@ -51,6 +51,17 @@ abstract class BaseController extends Controller
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
 
+        // CORS handling
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+            header("Access-Control-Allow-Origin: *");
+            header("Access-Control-Allow-Headers: Authorization, Content-Type");
+            header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+            exit(0);
+        }
+
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Headers: Authorization, Content-Type");
+        header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
         // Preload any models, libraries, etc, here.
 
         // E.g.: $this->session = service('session');

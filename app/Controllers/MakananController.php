@@ -62,31 +62,17 @@ class MakananController extends RestfulController
 
     public function ubah($id)
     {
-        $model = new MakananModel();
-
-        // Ambil data dari request
+        $input = $this->request->getRawInput();
+          // Ambil data dari request
         $data = [
-            'kode_makanan' => $this->request->getVar('kode_makanan'),
-            'nama_makanan' => $this->request->getVar('nama_makanan'),
-            'harga' => $this->request->getVar('harga')
+            'kode_makanan' => $input['kode_makanan'] ?? '',
+            'nama_makanan' => $input['nama_makanan'] ?? '',
+            'harga' => $input['harga'] ?? ''
         ];
 
-        // Update data ke database
+        $model = new MakananModel();
         $model->update($id, $data);
-
-        // Ambil data terbaru setelah update
         $produk = $model->find($id);
-
-        if ($produk) {
-            $produk = [
-                'id' => (int) $produk['id'],
-                'kode_makanan' => $produk['kode_makanan'],
-                'nama_makanan' => $produk['nama_makanan'],
-                'harga' => (float) $produk['harga'],
-                'created_at' => $produk['created_at'],
-                'updated_at' => $produk['updated_at'],
-            ];
-        }
 
         return $this->responseHasil(200, true, $produk);
     }
