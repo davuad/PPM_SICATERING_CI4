@@ -63,13 +63,15 @@ class PetugasController extends RestfulController
     // Method untuk mengubah data petugas berdasarkan ID
     public function ubah($id)
     {
-        $model = new PetugasModel();
+        $input = $this->request->getRawInput(); // ambil data dari raw input JSON
+
         $data = [
-            'nama_petugas' => $this->request->getVar('nama_petugas'),
-            'jabatan' => $this->request->getVar('jabatan'),
-            'no_hape' => $this->request->getVar('no_hape')
+            'nama_petugas' => $input['nama_petugas'] ?? '',
+            'jabatan' => $input['jabatan'] ?? '',
+            'no_hape' => $input['no_hape'] ?? '',
         ];
 
+        $model = new PetugasModel();
         $model->update($id, $data);
         $petugas = $model->find($id);
 
@@ -86,6 +88,7 @@ class PetugasController extends RestfulController
 
         return $this->responseHasil(200, true, $petugas);
     }
+
 
     // Method untuk menghapus data petugas berdasarkan ID
     public function hapus($id)

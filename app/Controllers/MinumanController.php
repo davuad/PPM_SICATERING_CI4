@@ -56,19 +56,18 @@ class MinumanController extends RestfulController
     // Method untuk mengubah data minuman berdasarkan ID
     public function ubah($id)
     {
-        $model = new MinumanModel();
+        $input = $this->request->getRawInput();
+
+        // Ambil data dari request
         $data = [
-            'kode_minuman' => $this->request->getVar('kode_minuman'),
-            'nama_minuman' => $this->request->getVar('nama_minuman'),
-            'harga' => $this->request->getVar('harga')
+            'kode_minuman' => $input['kode_minuman'] ?? '',
+            'nama_minuman' => $input['nama_minuman'] ?? '',
+            'harga' => $input['harga'] ?? ''
         ];
 
+        $model = new MinumanModel();
         $model->update($id, $data);
         $produk = $model->find($id);
-
-        if ($produk) {
-            $produk = $this->formatMinuman($produk);
-        }
 
         return $this->responseHasil(200, true, $produk);
     }

@@ -9,8 +9,8 @@ $routes->options('(:any)', 'Home::options');
 
 
 $routes->get('/', 'Home::index');
-$routes->post('/register', 'RegisterController::register');
-$routes->post('/api/login', 'LoginController::login');
+$routes->post('/registrasi', 'RegistrasiController::registrasi');
+$routes->post('/login', 'LoginController::login');
 
 
 $routes->group('makanan', function ($routes) {

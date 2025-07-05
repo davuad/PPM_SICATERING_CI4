@@ -1,70 +1,137 @@
 <?php
 
 namespace App\Controllers;
+
+use App\Models\LoginModel;
 use App\Models\MemberModel;
-use App\Models\MemberTokenModel;
-use App\Controllers\RestfulController;
+use CodeIgniter\HTTP\ResponseInterface;
 
-class LoginController extends RestfulController {
+class LoginController extends RestfulController
+{
 
-  public function login() {
-    // Ambil data dari request
+  public function login()
+  {
     $email = $this->request->getVar('email');
     $password = $this->request->getVar('password');
 
-    // Validasi jika ada field yang kosong
-    if (empty($email) || empty($password)) {
-      return $this->responseHasil(400, false, "Email dan password wajib diisi.");
-    }
+    $model = new MemberModel();
+    $member = $model->where(['email' => $email])->first();
 
-    // Cek apakah email ada di database
-    $memberModel = new MemberModel();
-    $member = $memberModel->where('email', $email)->first();
     if (!$member) {
-      return $this->responseHasil(400, false, "Email tidak terdaftar.");
+      return $this->responseHasil(400, false, "Email tidak ditemukan");
     }
 
-    // Verifikasi password
     if (!password_verify($password, $member['password'])) {
-      return $this->responseHasil(400, false, "Password tidak valid.");
+      return $this->responseHasil(400, false, "Password tidak valid");
     }
 
-    // Generate token (auth_key)
-    $auth_key = $this->generateAuthKey();
+    $login = new LoginModel();
+    $auth_key = $this->RandomString();
 
-    // Simpan token ke tabel member_token
-    $memberTokenModel = new MemberTokenModel();
-    // Jika ada token sebelumnya, kita hapus dulu token lama agar hanya ada satu token aktif per user
-    $memberTokenModel->where('member_id', $member['id'])->delete();
-
-    // Simpan token baru
-    $memberTokenModel->save([
+    $login->save([
       'member_id' => $member['id'],
-      'auth_key'  => $auth_key
+      'auth_key' => $auth_key
     ]);
 
-    // Kirimkan response dengan token dan data user
     $data = [
       'token' => $auth_key,
       'user' => [
-        'id' => $member['id'],
+        'id' => (int) $member['id'],
         'email' => $member['email'],
-        'username' => $member['username'],
-        'nama_lengkap' => $member['nama_lengkap']
       ]
     ];
 
     return $this->responseHasil(200, true, $data);
   }
 
-  // Fungsi untuk generate token secara acak
-  private function generateAuthKey($length = 100) {
+  private function RandomString($length = 100)
+  {
     $karakter = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $panjang_karakter = strlen($karakter);
     $str = '';
+
     for ($i = 0; $i < $length; $i++) {
       $str .= $karakter[rand(0, $panjang_karakter - 1)];
     }
+
     return $str;
+  }
+
+  /**
+   * Return an array of resource objects, themselves in array format.
+   *
+   * @return ResponseInterface
+   */
+  public function index()
+  {
+    //
+  }
+
+  /**
+   * Return the properties of a resource object.
+   *
+   * @param int|string|null $id
+   *
+   * @return ResponseInterface
+   */
+  public function show($id = null)
+  {
+    //
+  }
+
+  /**
+   * Return a new resource object, with default properties.
+   *
+   * @return ResponseInterface
+   */
+  public function new()
+  {
+    //
+  }
+
+  /**
+   * Create a new resource object, from "posted" parameters.
+   *
+   * @return ResponseInterface
+   */
+  public function create()
+  {
+    //
+  }
+
+  /**
+   * Return the editable properties of a resource object.
+   *
+   * @param int|string|null $id
+   *
+   * @return ResponseInterface
+   */
+  public function edit($id = null)
+  {
+    //
+  }
+
+  /**
+   * Add or update a model resource, from "posted" properties.
+   *
+   * @param int|string|null $id
+   *
+   * @return ResponseInterface
+   */
+  public function update($id = null)
+  {
+    //
+  }
+
+  /**
+   * Delete the designated resource object from the model.
+   *
+   * @param int|string|null $id
+   *
+   * @return ResponseInterface
+   */
+  public function delete($id = null)
+  {
+    //
   }
 }
