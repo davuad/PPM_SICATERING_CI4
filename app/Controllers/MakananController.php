@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Models\MakananModel;
-use App\Models\Produk;
 
 
 class MakananController extends RestfulController
